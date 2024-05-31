@@ -20,8 +20,6 @@ class Transmitter(private val context: Context) {
         Log.d(TAG, "estoy funcionando")
 
         val ID = "6ef0e30d73084458b62ef706c692ca77"
-        //val Service_UUID = ParcelUuid
-        //   .fromString("6ef0e30d-7308-4458-b62e-f706c692ca77")
 
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         var adapter = bluetoothManager.adapter
@@ -30,16 +28,7 @@ class Transmitter(private val context: Context) {
             Log.e(TAG, "Bluetooth is disabled")
             return
         }
-        /*
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_ADVERTISE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.e(TAG, "BLUETOOTH_CONNECT denied!")
-            return
-        }
-        */
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
             != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "BLUETOOTH_ADVERTISE permission denied!")
@@ -49,18 +38,6 @@ class Transmitter(private val context: Context) {
         //Log.e(TAG, " adapter.leMaximumAdvertisingDataLength "+ adapter.leMaximumAdvertisingDataLength)
 
         adapter.name="LE"
-        /*
-        val advertiser = adapter.bluetoothLeAdvertiser
-
-        if (!adapter.isLe2MPhySupported) {
-            Log.e(TAG, "2M PHY not supported!")
-            return
-        }
-
-        if (!adapter.isLeExtendedAdvertisingSupported) {
-            Log.e(TAG, "LE Extended Advertising not supported!")
-            return
-        }*/
 
         if (!adapter.isLe2MPhySupported) {
             Log.e(TAG, "2M PHY not supported!")
