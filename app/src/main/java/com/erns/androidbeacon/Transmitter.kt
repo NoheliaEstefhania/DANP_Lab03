@@ -80,12 +80,7 @@ class Transmitter(private val context: Context) {
         }
 
         val dataBuilder = BuildAdvertiseData(ID)
-
-        val settingsBuilder = AdvertiseSettings.Builder()
-        settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER) // saves on battery power
-        settingsBuilder.setConnectable(false) // set to true to connect to other ble devices
-        settingsBuilder.setTimeout(0) //set to 0 to continously advertise
-        settingsBuilder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+        val settingsBuilder = buildAdvertiseSettings()
 
         if (advertiser != null) {
             advertiser.stopAdvertising(callbackClose)
@@ -93,6 +88,15 @@ class Transmitter(private val context: Context) {
         } else {
             Log.d(TAG, "advertiser is null")
         }
+    }
+
+    private fun buildAdvertiseSettings(): AdvertiseSettings.Builder{
+        val settingsBuilder = AdvertiseSettings.Builder()
+        settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER) // saves on battery power
+        settingsBuilder.setConnectable(false) // set to true to connect to other ble devices
+        settingsBuilder.setTimeout(0) //set to 0 to continously advertise
+        settingsBuilder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+        return settingsBuilder
     }
 
 
