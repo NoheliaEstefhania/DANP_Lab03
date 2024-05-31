@@ -93,8 +93,6 @@ class Transmitter(private val context: Context) {
         } else {
             Log.d(TAG, "advertiser is null")
         }
-
-
     }
 
 
@@ -109,25 +107,20 @@ class Transmitter(private val context: Context) {
             super.onStartFailure(errorCode)
 
             Log.d(TAG, "Advertising failed, errorCode: $errorCode")
-
-            when (errorCode) {
-                ADVERTISE_FAILED_ALREADY_STARTED -> Log.d(TAG, "ADVERTISE_FAILED_ALREADY_STARTED")
-                ADVERTISE_FAILED_DATA_TOO_LARGE -> Log.d(TAG, "ADVERTISE_FAILED_DATA_TOO_LARGE")
-                ADVERTISE_FAILED_FEATURE_UNSUPPORTED -> Log.d(
-                    TAG,
-                    "ADVERTISE_FAILED_FEATURE_UNSUPPORTED"
-                )
-
-                ADVERTISE_FAILED_INTERNAL_ERROR -> Log.d(TAG, "ADVERTISE_FAILED_INTERNAL_ERROR")
-                ADVERTISE_FAILED_TOO_MANY_ADVERTISERS -> Log.d(
-                    TAG,
-                    "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS"
-                )
-
-                else -> Log.d(TAG, "Unhandled error: $errorCode")
-            }
+            handleAdvertisingError(errorCode)
             //                sendFailureIntent(errorCode);
             //                stopSelf();
+        }
+    }
+
+    private fun handleAdvertisingError(errorCode:Int){
+        when (errorCode) {
+            AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED -> Log.d(TAG, "ADVERTISE_FAILED_ALREADY_STARTED")
+            AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE -> Log.d(TAG, "ADVERTISE_FAILED_DATA_TOO_LARGE")
+            AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED -> Log.d(TAG, "ADVERTISE_FAILED_FEATURE_UNSUPPORTED")
+            AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR -> Log.d(TAG, "ADVERTISE_FAILED_INTERNAL_ERROR")
+            AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS -> Log.d(TAG, "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS")
+            else -> Log.d(TAG, "Unhandled error: $errorCode")
         }
     }
 
@@ -166,4 +159,5 @@ class Transmitter(private val context: Context) {
         dataBuilder.addManufacturerData(76, manufacturerData.array())
         return dataBuilder
     }
+
 }
