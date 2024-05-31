@@ -18,11 +18,12 @@ class Transmitter(private val context: Context) {
 
     fun startAdvertiser() {
         Log.d(TAG, "estoy funcionando")
-        val Service_UUID = ParcelUuid
-            .fromString("6ef0e30d-7308-4458-b62e-f706c692ca77")
 
-        val bluetoothManager =
-            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val ID = "6ef0e30d73084458b62ef706c692ca77"
+        //val Service_UUID = ParcelUuid
+        //   .fromString("6ef0e30d-7308-4458-b62e-f706c692ca77")
+
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         var adapter = bluetoothManager.adapter
 
         if (adapter == null || !adapter.isEnabled) {
@@ -39,12 +40,13 @@ class Transmitter(private val context: Context) {
             return
         }
         */
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
+            != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "BLUETOOTH_ADVERTISE permission denied!")
             return
         }
 
-        Log.e(TAG, " adapter.leMaximumAdvertisingDataLength "+ adapter.leMaximumAdvertisingDataLength)
+        //Log.e(TAG, " adapter.leMaximumAdvertisingDataLength "+ adapter.leMaximumAdvertisingDataLength)
 
         adapter.name="LE"
         /*
@@ -77,25 +79,7 @@ class Transmitter(private val context: Context) {
             return
         }
 
-        val dataBuilder = AdvertiseData.Builder()
-        dataBuilder.setIncludeDeviceName(true) // To save on packet space you may not include some data
-        dataBuilder.setIncludeTxPowerLevel(false)
-
-        val manufacturerData = ByteBuffer.allocate(23)
-        val uuid: ByteArray = BleTools.getIdAsByte("6ef0e30d73084458b62ef706c692ca77")
-
-        manufacturerData.put(0, 0x02.toByte()) // Beacon Identifier
-        manufacturerData.put(1, 0x15.toByte()) // Beacon Identifier
-        for (i in 2..17) {
-            manufacturerData.put(i, uuid[i - 2]) // adding the UUID
-        }
-        manufacturerData.put(18, 0x00.toByte()) // first byte of Major
-        manufacturerData.put(19, 0x05.toByte()) // second byte of Major
-        manufacturerData.put(20, 0x00.toByte()) // first minor
-        manufacturerData.put(21, 0x58.toByte()) // second minor
-        manufacturerData.put(22, 0x76.toByte()) // txPower
-        dataBuilder.addManufacturerData(76, manufacturerData.array())
-
+        val dataBuilder = BuildAdvertiseData(ID)
 
         val settingsBuilder = AdvertiseSettings.Builder()
         settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER) // saves on battery power
@@ -143,7 +127,7 @@ class Transmitter(private val context: Context) {
                 else -> Log.d(TAG, "Unhandled error: $errorCode")
             }
             //                sendFailureIntent(errorCode);
-//                stopSelf();
+            //                stopSelf();
         }
     }
 
@@ -160,4 +144,26 @@ class Transmitter(private val context: Context) {
         }
     }
 
+    private fun BuildAdvertiseData(uuid: String) : AdvertiseData.Builder{
+        val dataBuilder = AdvertiseData.Builder()
+        dataBuilder.setIncludeDeviceName(true) // To save on packet space you may not include some data
+        dataBuilder.setIncludeTxPowerLevel(false)
+
+        val manufacturerData = ByteBuffer.allocate(23)
+
+        val uuid: ByteArray = BleTools.getIdAsByte(uuid)
+
+        manufacturerData.put(0, 0x02.toByte()) // Beacon Identifier
+        manufacturerData.put(1, 0x15.toByte()) // Beacon Identifier
+        for (i in 2..17) {
+            manufacturerData.put(i, uuid[i - 2]) // adding the UUID
+        }
+        manufacturerData.put(18, 0x00.toByte()) // first byte of Major
+        manufacturerData.put(19, 0x05.toByte()) // second byte of Major
+        manufacturerData.put(20, 0x00.toByte()) // first minor
+        manufacturerData.put(21, 0x58.toByte()) // second minor
+        manufacturerData.put(22, 0x76.toByte()) // txPower
+        dataBuilder.addManufacturerData(76, manufacturerData.array())
+        return dataBuilder
+    }
 }
